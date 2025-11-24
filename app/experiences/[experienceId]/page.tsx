@@ -9,7 +9,11 @@ export default async function ExperiencePage({
 	const { experienceId } = await params;
 
 	try {
-		const { userId } = await whopsdk.verifyUserToken(await headers());
+		const headerStore = await headers();
+		const headersPlain = Object.fromEntries(headerStore.entries());
+		console.log("Headers received:", Object.keys(headersPlain)); // Debugging
+
+		const { userId } = await whopsdk.verifyUserToken(headersPlain as any);
 		const access = await whopsdk.users.checkAccess(experienceId, { id: userId });
 
 		if (!access.has_access) {
