@@ -7,7 +7,11 @@ export default async function DashboardPage({
 	params: Promise<{ companyId: string }>;
 }) {
 	const { companyId } = await params;
-	const { userId } = await whopsdk.verifyUserToken(await headers());
+
+	// Allow access to demo dashboard without Whop Auth
+	if (companyId !== 'demo') {
+		const { userId } = await whopsdk.verifyUserToken(await headers());
+	}
 
 	// Mock Data for MVP
 	const stats = [
