@@ -11,9 +11,32 @@ export default async function ExperiencePage({
 	const headerStore = await headers();
 	const headersPlain = Object.fromEntries(headerStore.entries());
 
-	try {
-		console.log("Headers received:", Object.keys(headersPlain)); // Debugging
+	// Check if the request is coming from Whop (has the token)
+	// Headers are case-insensitive, but usually lowercased in the map
+	const hasToken = headersPlain["x-whop-user-token"] || headersPlain["X-Whop-User-Token"];
 
+	if (!hasToken) {
+		return (
+			<div className="flex items-center justify-center h-screen bg-gray-50">
+				<div className="text-center p-8 bg-white rounded-lg shadow-md max-w-md">
+					<h1 className="text-2xl font-bold text-gray-900 mb-4">Open in Whop</h1>
+					<p className="text-gray-600 mb-6">
+						This application is designed to be used inside Whop. Please open it from your Whop dashboard or experience page.
+					</p>
+					<a
+						href="https://whop.com/hub"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+					>
+						Go to Whop
+					</a>
+				</div>
+			</div>
+		);
+	}
+
+	try {
 		const { userId } = await whopsdk.verifyUserToken(headersPlain as any);
 		const access = await whopsdk.users.checkAccess(experienceId, { id: userId });
 
@@ -33,12 +56,6 @@ export default async function ExperiencePage({
 				<h2 className="font-bold">Application Error</h2>
 				<pre className="mt-2 text-sm overflow-auto">{JSON.stringify(error, Object.getOwnPropertyNames(error), 2)}</pre>
 				<p className="mt-2 text-xs">Message: {error.message}</p>
-				<div className="mt-4">
-					<h3 className="font-bold text-sm">Debug Info: Received Headers</h3>
-					<pre className="mt-1 text-xs bg-gray-100 p-2 rounded overflow-auto max-h-40">
-						{JSON.stringify(Object.keys(headersPlain), null, 2)}
-					</pre>
-				</div>
 			</div>
 		);
 	}
