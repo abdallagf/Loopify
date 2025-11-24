@@ -9,19 +9,29 @@ export default async function AudiencePage({
 
     // Fetch real members from Whop
     let members: any[] = [];
-    try {
-        const memberships = await whopsdk.memberships.list({ company_id: companyId });
-        members = memberships.data.map((m: any) => ({
-            id: m.id,
-            name: m.user?.name || m.user?.username || "Unknown",
-            email: m.email || "No email",
-            status: m.valid ? "Subscribed" : "Unsubscribed",
-            joined: new Date(m.created_at * 1000).toLocaleDateString(),
-            ltv: "$0",
-        }));
-    } catch (error) {
-        console.error("Failed to fetch members:", error);
-        // Fallback to empty or error state
+
+    if (companyId === 'demo') {
+        // Mock data for demo
+        members = [
+            { id: '1', name: "Demo User 1", email: "demo1@example.com", status: "Subscribed", joined: "11/24/2025", ltv: "$100" },
+            { id: '2', name: "Demo User 2", email: "demo2@example.com", status: "Unsubscribed", joined: "11/20/2025", ltv: "$0" },
+            { id: '3', name: "Demo User 3", email: "demo3@example.com", status: "Subscribed", joined: "11/15/2025", ltv: "$50" },
+        ];
+    } else {
+        try {
+            const memberships = await whopsdk.memberships.list({ company_id: companyId });
+            members = memberships.data.map((m: any) => ({
+                id: m.id,
+                name: m.user?.name || m.user?.username || "Unknown",
+                email: m.email || "No email",
+                status: m.valid ? "Subscribed" : "Unsubscribed",
+                joined: new Date(m.created_at * 1000).toLocaleDateString(),
+                ltv: "$0",
+            }));
+        } catch (error) {
+            console.error("Failed to fetch members:", error);
+            // Fallback to empty or error state
+        }
     }
 
     const segments = [
