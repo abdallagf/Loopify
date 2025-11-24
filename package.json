@@ -9,12 +9,17 @@
 		"lint": "biome lint"
 	},
 	"dependencies": {
+		"@sendgrid/mail": "^8.1.6",
+		"@supabase/supabase-js": "^2.84.0",
 		"@vercel/functions": "^3.1.4",
 		"@whop/react": "0.3.0",
 		"@whop/sdk": "0.0.3",
+		"@xyflow/react": "^12.9.3",
 		"next": "16.0.0",
 		"react": "19.2.0",
-		"react-dom": "19.2.0"
+		"react-dom": "19.2.0",
+		"resend": "^6.5.2",
+		"twilio": "^5.10.6"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.6",
