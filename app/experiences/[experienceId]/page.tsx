@@ -8,9 +8,10 @@ export default async function ExperiencePage({
 }) {
 	const { experienceId } = await params;
 
+	const headerStore = await headers();
+	const headersPlain = Object.fromEntries(headerStore.entries());
+
 	try {
-		const headerStore = await headers();
-		const headersPlain = Object.fromEntries(headerStore.entries());
 		console.log("Headers received:", Object.keys(headersPlain)); // Debugging
 
 		const { userId } = await whopsdk.verifyUserToken(headersPlain as any);
@@ -32,6 +33,12 @@ export default async function ExperiencePage({
 				<h2 className="font-bold">Application Error</h2>
 				<pre className="mt-2 text-sm overflow-auto">{JSON.stringify(error, Object.getOwnPropertyNames(error), 2)}</pre>
 				<p className="mt-2 text-xs">Message: {error.message}</p>
+				<div className="mt-4">
+					<h3 className="font-bold text-sm">Debug Info: Received Headers</h3>
+					<pre className="mt-1 text-xs bg-gray-100 p-2 rounded overflow-auto max-h-40">
+						{JSON.stringify(Object.keys(headersPlain), null, 2)}
+					</pre>
+				</div>
 			</div>
 		);
 	}
