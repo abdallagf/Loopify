@@ -10,10 +10,11 @@ export async function middleware(request: Request) {
             return NextResponse.next();
         }
 
-        const { userId } = await whopsdk.verifyUserToken(request.headers);
-        if (!userId) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
+        // const { userId } = await whopsdk.verifyUserToken(request.headers);
+        // if (!userId) {
+        //     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        // }
+        return NextResponse.next();
         return NextResponse.next();
     } catch (error) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

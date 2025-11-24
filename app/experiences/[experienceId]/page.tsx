@@ -7,17 +7,27 @@ export default async function ExperiencePage({
 	params: Promise<{ experienceId: string }>;
 }) {
 	const { experienceId } = await params;
-	const { userId } = await whopsdk.verifyUserToken(await headers());
 
-	const access = await whopsdk.users.checkAccess(experienceId, { id: userId });
+	try {
+		const { userId } = await whopsdk.verifyUserToken(await headers());
+		const access = await whopsdk.users.checkAccess(experienceId, { id: userId });
 
-	if (!access.has_access) {
-		return (
-			<div className="flex items-center justify-center h-screen bg-gray-50">
-				<div className="text-center">
-					<h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-					<p className="text-gray-500">You do not have access to this experience.</p>
+		if (!access.has_access) {
+			return (
+				<div className="flex items-center justify-center h-screen bg-gray-50">
+					<div className="text-center">
+						<h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
+						<p className="text-gray-500">You do not have access to this experience.</p>
+					</div>
 				</div>
+			);
+		}
+	} catch (error: any) {
+		return (
+			<div className="p-4 bg-red-50 text-red-700">
+				<h2 className="font-bold">Application Error</h2>
+				<pre className="mt-2 text-sm overflow-auto">{JSON.stringify(error, Object.getOwnPropertyNames(error), 2)}</pre>
+				<p className="mt-2 text-xs">Message: {error.message}</p>
 			</div>
 		);
 	}
